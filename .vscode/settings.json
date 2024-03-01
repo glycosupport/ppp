@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "types.h": "c",
+        "setjmp.h": "c",
+        "lib_int.h": "c",
+        "int_lib.h": "c",
+        "screen.h": "c"
     }
 }

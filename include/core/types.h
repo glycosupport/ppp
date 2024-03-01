@@ -1,35 +1,63 @@
-/*
- * Copyright (c) 2007, 2008 University of Tsukuba
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. Neither the name of the University of Tsukuba nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+#ifndef _TYPES_H
+#define _TYPES_H
 
-#ifndef _CORE_TYPES_H
-#define _CORE_TYPES_H
+#define NULL 0
+typedef unsigned int size_t;
 
-#include <core/types.h>
+typedef unsigned long ulong;
+typedef unsigned long u32;
+typedef unsigned short u16;
+typedef unsigned char u8;
+
+typedef unsigned long long uint64_t;
+typedef unsigned long long u_int64_t;
+typedef unsigned long uint32_t;
+typedef unsigned long u_int32_t;
+typedef unsigned short uint16_t;
+typedef unsigned short u_int16_t;
+typedef unsigned char uint8_t;
+typedef unsigned char u_int8_t;
+
+typedef  long __int32_t;
+typedef unsigned long __uint32_t;
+
+typedef unsigned long long u_quad_t;    /* quads */
+typedef long long quad_t;
+typedef quad_t * qaddr_t;
+typedef unsigned long u_int;
+typedef unsigned long uint;
+
+typedef long long int64_t;
+typedef long int32_t;
+typedef short int16_t;
+typedef char int8_t;
+
+
+#define _QUAD_HIGHWORD 1
+#define _QUAD_LOWWORD 0
+
+#define __BEGIN_DECLS
+#define __END_DECLS
+#define __dead
+#define __far
+
+#define __HI(x) *(1+(int*)&x)
+#define __LO(x) *(int*)&x
+
+#define __P(a) a
+#define CHAR_BIT        8       	/* max # of bits in a "char" */
+
+#define EXTRACT_WORDS(i0, i1, x) \
+	i0 =  __HI(x); \
+	i1 =  __LO(x);
+
+#define INSERT_WORDS(x, i0, i1) \
+	__HI(x) = i0; \
+	__LO(x) = i1; 
+
+#define _BEGIN_STD_C
+#define _END_STD_C
+
+#define _EXFUN(a,b) a b
 
 #endif
