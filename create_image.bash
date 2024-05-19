@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-dev1=/dev/loop92
-dev2=/dev/loop93
+dev1=/dev/loop90
+dev2=/dev/loop91
 
 echo "Creating hdd.img..."
 dd if=/dev/zero of=./hdd.img bs=512 count=16065 1>/dev/null 2>&1

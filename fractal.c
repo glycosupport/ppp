@@ -2,6 +2,8 @@
 #include "printf.h"
 #include "string.h"
 
+#include "RGBImage.h"
+
 int VBE_SetMode( ulong mode );
 int VBE_Setup(int w, int h);
 double floor(double x);
@@ -74,7 +76,14 @@ else
 
 void DrawFractal(void)
 {
-    int x = 0, y = 0, w= 320, h = 200;
+    int x = 0, y = 0, w= 800, h = 600;
+
+    // int color;
+
+    // color = HSVtoRGB(0, 0, 1000);
+    // printf("COLOR #%x\n", color);
+
+    // return;
 
     if (!VBE_Setup(w, h))
 	    return;
@@ -83,7 +92,7 @@ void DrawFractal(void)
 
     if (!VBE_SetMode(vbe_selected_mode | 0x4000)) {
         printf("VBE_SetMode error");
-        // return;
+        return;
     }
 
     printf("VBE_LFB_ADDR: %d\n", vbe_lfb_addr);
@@ -97,24 +106,76 @@ void DrawFractal(void)
     cRe = -0.7;
     cIm = 0.27015;
 
-    for(x = 0; x < w; x++)
-    for(y = 0; y < h; y++)
-    {
-        newRe = 1.5 * (x - w / 2) / (0.5 * zoom * w) + moveX;
-        newIm = (y - h / 2) / (0.5 * zoom * h) + moveY;
+    // for (int i = 0; i < 48; i++) {
+    //     for (int j = 0; j < 48; j++) {
+    //         *(int *)((char *)vbe_lfb_addr + j * w * vbe_bytes + i * vbe_bytes + 0) = 0x00A0FF;
+    //     }
+    // }
 
-        int i;
-        for(i = 0; i < maxIterations; i++)
-        {
-            oldRe = newRe;
-            oldIm = newIm;
-            newRe = oldRe * oldRe - oldIm * oldIm + cRe;
-            newIm = 2 * oldRe * oldIm + cIm;
-            if((newRe * newRe + newIm * newIm) > 4) break;
+    // return;
+
+    // color = HSVtoRGB(0, 0, 1000);
+    // printf("COLOR %d\n", color);
+
+    // 9216
+
+    unsigned int rgb_map[9216] = {0};
+    unsigned int rgb_map_size = 0;
+
+    int skip_index = 0;
+
+    for (int i = 0; i < 9216; i++) {
+        if (skip_index == 3) {
+            skip_index = 0;
+            continue;
         }
-        color = HSVtoRGB(i % 256, 255, 255 * (i < maxIterations));
+
+        rgb_map[rgb_map_size] = bird[i];
+
+        skip_index++;
+        rgb_map_size++;
+    }
+
+    int colors[9126] = {0};
+    unsigned int colors_size = 0;
+
+    int color_index = 0;
+
+    for (int i = 0; i < rgb_map_size; i++) {
+
+        if (color_index == 2) {
+            color_index = 0;
+            colors_size++;
+            continue;
+        }
+
+        colors[colors_size] = (rgb_map[i] << (color_index * 8)) | colors[colors_size];
+        color_index++;
+    }
+
+    int output_index = 0;
+
+    for(y = 0; y < 48; y++)
+    for(x = 0; x < 48; x++)
+    {
+
+        *(int *)((char *)vbe_lfb_addr + y * w * vbe_bytes + x * vbe_bytes + 0) = colors[output_index++];
+
+        // newRe = 1.5 * (x - w / 2) / (0.5 * zoom * w) + moveX;
+        // newIm = (y - h / 2) / (0.5 * zoom * h) + moveY;
+
+        // int i;
+        // for(i = 0; i < maxIterations; i++)
+        // {
+        //     oldRe = newRe;
+        //     oldIm = newIm;
+        //     newRe = oldRe * oldRe - oldIm * oldIm + cRe;
+        //     newIm = 2 * oldRe * oldIm + cIm;
+        //     if((newRe * newRe + newIm * newIm) > 4) break;
+        // }
+
 
 	// Draw pixel
-        *(int *)((char *)vbe_lfb_addr + y * w * vbe_bytes + x * vbe_bytes + 0) = color & 0xFFFFFF;
+        // *(int *)((char *)vbe_lfb_addr + y * w * vbe_bytes + x * vbe_bytes + 0) = 0xFFFFFF;
     }
 }

@@ -56,7 +56,7 @@ int VBE_SetMode( ulong mode )
 
 int VBE_Setup(int w, int h)
 {
-    uint32_t m = 0;
+  uint32_t m = 0;
     
     printf("\nVBE: test started");
     VBE_BiosInit();
@@ -84,30 +84,30 @@ int VBE_Setup(int w, int h)
 
     //Try to find  mode
     int found = 0;
-
     for (m = 0x0; m < 0x200; m++)
     {
         ModeInfoBlock *p_m_info = VBE_GetModeInfo(m);
         if (p_m_info != NULL)
-	    {
+    {
             printf("\nVBE: %x %dx%dx%d at %x", m,
-            p_m_info->XResolution, 
-            p_m_info->YResolution, 
-            p_m_info->BitsPerPixel, 
-            p_m_info->PhysBasePtr);
-                
-            if (p_m_info->PhysBasePtr == 0 
-            && p_m_info->XResolution == w 
-            && p_m_info->YResolution == h)
-                {
-                    found = 1;
-                    vbe_selected_mode = m;
-                    vbe_lfb_addr = p_m_info->PhysBasePtr;
-                    vbe_bytes = p_m_info->BitsPerPixel / 8;
-                    printf("\nVBE: FOUND GOOD %dx%dx%d -> %x at %x", w, h, vbe_bytes, vbe_selected_mode, vbe_lfb_addr);
-                }
+        p_m_info->XResolution, 
+        p_m_info->YResolution, 
+        p_m_info->BitsPerPixel, 
+        p_m_info->PhysBasePtr);
+            
+        if (p_m_info->PhysBasePtr != 0 
+        && p_m_info->XResolution == w 
+        && p_m_info->YResolution == h
+        && (p_m_info->BitsPerPixel == 24 || p_m_info->BitsPerPixel == 32))
+            {
+                found = 1;
+                vbe_selected_mode = m;
+                vbe_lfb_addr = p_m_info->PhysBasePtr;
+                vbe_bytes = p_m_info->BitsPerPixel / 8;
+                printf("\nVBE: FOUND GOOD %dx%dx%d -> %x at %x", w, h, vbe_bytes, vbe_selected_mode, vbe_lfb_addr);
+            }
         }
     }
-
+    
     return found;
 }
